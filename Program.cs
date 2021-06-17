@@ -1,4 +1,6 @@
 ﻿using System;
+using MySql.Data.MySqlClient;
+
 
 namespace vanderBinckesBP
 {
@@ -6,7 +8,10 @@ namespace vanderBinckesBP
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            //Console.WriteLine("Welkom bij het Bakfiets Verhuur Programma van VanderBinckes.");
+            //Console.WriteLine("Kies uit het onderstaande menu de gewenste optie.");
+            //string keuze = Console.ReadLine();
+            Database dbObject = new Database();
         }
     }
 }
