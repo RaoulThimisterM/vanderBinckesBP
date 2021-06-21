@@ -19,9 +19,11 @@ namespace vanderBinckesBP
             {
                 connection.ConnectionString = connectionString;
                 connection.Open();
+                return true;
             }
-            
-            return true;
+            else {
+                return false;
+            }
         }
         public void Close()
         {

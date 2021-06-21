@@ -12,6 +12,7 @@ namespace vanderBinckesBP
             //Console.WriteLine("Kies uit het onderstaande menu de gewenste optie.");
             //string keuze = Console.ReadLine();
             Database dbObject = new Database();
+            dbObject.isConnect();
         }
     }
 }
