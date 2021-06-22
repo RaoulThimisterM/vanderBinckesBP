@@ -21,7 +21,8 @@ namespace vanderBinckesBP
                 connection.Open();
                 return true;
             }
-            else {
+            else
+            {
                 return false;
             }
         }
@@ -32,16 +33,35 @@ namespace vanderBinckesBP
 
         public List<Medewerker> ListMedewerkers()
         {
-            List<Medewerker> a = new List<Medewerker>();
+            List<Medewerker> medewerker = new List<Medewerker>();
             if (isConnect())
             {
-                string sqlQuery = "SELECT voornaam, achternaam FROM `vanderbinckesdb`.`medewerker`;";
+                string sqlQuery = "SELECT medewerkernummer, voornaam, achternaam FROM `vanderbinckesdb`.`medewerker`;";
                 MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
-                //Console.WriteLine(cmd.ExecuteScalar().ToString());
-                Console.WriteLine(cmd.ExecuteReader());
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Medewerker b = new Medewerker(Convert.ToInt32(rdr.GetValue(0)), Convert.ToString(rdr.GetValue(1)), Convert.ToString(rdr.GetValue(2)));
+                    medewerker.Add(b);
+                }
             }
             Close();
-            return a;
+            medewerker.ForEach(item => Console.WriteLine(item.voornaam + " " + item.achternaam + " Werknemersnummer: " + item.medewerkernummer));
+            return medewerker;
+        }
+
+        public void CreateMedewerker(Medewerker a) {
+            if (isConnect())
+            {
+                string sqlQuery = "INSERT INTO medewerker(voornaam, achternaam, datum_in_dienst) VALUES(@voornaam, @achternaam, @datum)";
+                MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
+                cmd.Parameters.AddWithValue("@voornaam", a.voornaam);
+                cmd.Parameters.AddWithValue("@achternaam", a.achternaam);
+                cmd.Parameters.AddWithValue("@datum", a.datumInDienst);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Medewerker toegevoegd: " + a.voornaam + " " + a.achternaam + ". In dienst sinds: " + a.datumInDienst);
+            }
         }
 
         //public void getVersion() {
