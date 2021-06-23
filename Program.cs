@@ -7,16 +7,15 @@ namespace vanderBinckesBP
 {
     class Program
     {
+        public static Database dbObject = new Database();
         static void Main(string[] args)
         {
-            Database dbObject = new Database();
             Console.WriteLine("Welkom bij het Bakfiets Verhuur Programma van VanderBinckes.");
             while (true)
             {
-                Medewerker raoul = new Medewerker("Raoul", "Thimister");
                 RunMainMenu();
                 int keuze = Convert.ToInt32(Console.ReadLine());
-                if (keuze < 1 || keuze > 5)
+                if (keuze < 0 || keuze > 7)
                 {
                     Console.WriteLine("Ongeldige keuze, probeer het nog een keer.");
                 }
@@ -24,21 +23,155 @@ namespace vanderBinckesBP
                 {
                     switch (keuze)
                     {
+                        case 0:
+                            Environment.Exit(0);
+                            break;
                         case 1:
-                            dbObject.CreateMedewerker(raoul);
+                            MaakVerhuur();
                             break;
                         case 2:
+                            MaakMedewerker();
+                            break;
+                        case 3:
                             dbObject.ListMedewerkers();
+                            break;
+                        case 4:
+                            BewerkMedewerker();
+                            break;
+                        case 5:
+                            VerwijderMedewerker();
+                            break;
+                        case 6:
+                            dbObject.ListKlanten();
+                            break;
+                        case 7:
+                            BestellingPerMedewerker();
+                            break;
+                        default:
                             break;
                     }
                 }
             }
         }
 
+        private static void BestellingPerMedewerker()
+        {
+            Console.Clear();
+            Console.WriteLine("Vul medewerkernummer in:");
+            int medewerkernummer = Convert.ToInt32(Console.ReadLine());
+            Medewerker medewerker = new Medewerker(medewerkernummer);
+            dbObject.ListBestellingMedewerker(medewerker);
+            Console.WriteLine("Druk op een toets om terug te keren.");
+            Console.ReadLine();
+        }
+
+        private static void MaakVerhuur()
+        {
+            Console.Clear();
+            Console.WriteLine("Geef je medewerkernummer op:");
+            int medewerkernummer = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Geeft het klantnummer op voor verhuur:");
+            int klantnummer = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Datum van verhuur:(Notatie YYYY-MM-DD)");
+            DateTime dateTime = Convert.ToDateTime(Console.ReadLine());
+            Console.WriteLine("Aantal dagen:");
+            int aantalDagen = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Welke bakfiets wordt gekozen?");
+            dbObject.ListBakfietsen();
+            int bakfietsnummer = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Welke  accessoires worden toegevoegd? Vul er 1 per keer in. Druk op 0 om te stoppen met toevoegen.");
+            dbObject.ListAccessoires();
+            List<Accessoire> selAccessoires = new List<Accessoire>();
+            while (true)
+            {
+
+                int accessoirenummer = Convert.ToInt32(Console.ReadLine());
+                if (accessoirenummer == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    selAccessoires.Add(dbObject.GetAccessoire(accessoirenummer));
+                    Console.WriteLine("Accessoire toegevoegd!");
+                }
+            }
+            if (selAccessoires.Count == 0)
+            {
+                Console.WriteLine("Geen accesoires gekozen.");
+            }
+            else
+            {
+                Console.WriteLine("De gekozen accessoires:");
+                selAccessoires.ForEach(item => Console.WriteLine("Naam: " + item.naam + " Prijs: €" + item.huurprijs));
+                //TODO: Accessoires in join tabel toevoegen
+            }
+            decimal huurprijstotaal = BerekenHuurprijs(bakfietsnummer, aantalDagen, selAccessoires);
+            Console.WriteLine("Daarmee is de totale huurprijs: €" + huurprijstotaal);
+            Verhuur verhuur = new Verhuur(dateTime, bakfietsnummer, aantalDagen, huurprijstotaal, klantnummer, medewerkernummer);
+            dbObject.CreateVerhuur(verhuur);
+            Console.ReadLine();
+        }
+
+        private static decimal BerekenHuurprijs(int bakfietsnummer, int aantalDagen, List<Accessoire> accesoires)
+        {
+            decimal huurprijs = 0;
+            Bakfiets bakfiets = dbObject.GetBakfiets(bakfietsnummer);
+            huurprijs += (bakfiets.huurprijs * aantalDagen);
+            accesoires.ForEach(item => huurprijs += item.huurprijs);
+            return huurprijs;
+        }
+
+        private static void VerwijderMedewerker()
+        {
+            Console.Clear();
+            Console.WriteLine("Medewerker verwijderen.");
+            Console.WriteLine("Voer het medewerkernummer in:");
+            int medewerkernummer = Convert.ToInt32(Console.ReadLine());
+            Medewerker medewerker = new Medewerker(medewerkernummer);
+            dbObject.DeleteMedewerker(medewerker);
+        }
+
+        private static void BewerkMedewerker()
+        {
+            Console.Clear();
+            Console.WriteLine("Medewerker bewerken.");
+            Console.WriteLine("Voer het medewerkernummer in:");
+            int medewerkernummer = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Wat is de nieuwe voornaam?");
+            string voornaam = Console.ReadLine();
+            Console.WriteLine("Wat is de nieuwe achternaam?");
+            string achternaam = Console.ReadLine();
+            Medewerker medewerker = new Medewerker(medewerkernummer, voornaam, achternaam, DateTime.Today);
+            dbObject.EditMedewerker(medewerker);
+        }
+
+        private static void MaakMedewerker()
+        {
+            Console.Clear();
+            Console.WriteLine("Nieuwe medewerker aanmaken.\nWat is de voornaam van de medeweker?");
+            string voornaam = Console.ReadLine();
+            Console.WriteLine("Wat is de achternaam van de medewerker?");
+            string achternaam = Console.ReadLine();
+            Console.WriteLine("Wanneer is de medewerker in dienst getreden?(laat leeg voor vandaag. Notatie is YYYY-MM-DD)");
+            string datumInDienst = Console.ReadLine();
+            DateTime inDienst;
+            if (datumInDienst == "")
+            {
+                inDienst = DateTime.Today;
+            }
+            else
+            {
+                inDienst = Convert.ToDateTime(datumInDienst);
+            }
+            Medewerker medewerker = new Medewerker(voornaam, achternaam, inDienst);
+            dbObject.CreateMedewerker(medewerker);
+        }
+
         private static void RunMainMenu()
         {
-            Console.WriteLine("Kies uit het onderstaande menu de gewenste optie.");
-            Console.WriteLine("1. Maak nieuwe mederwerker aan\n2. Lijst van alle medewerkers\n3. Bewerk medewerker\n4. keuze 4\n5. keuze 5");
+            Console.WriteLine("\nKies uit het onderstaande menu de gewenste optie.");
+            Console.WriteLine("0. Stop programma\n1. Maak nieuwe verhuur\n2. Maak nieuwe medewerker aan\n3. Lijst van alle medewerkers\n4. Bewerk medewerker\n5. Verwijder medewerker\n6. Lijst van alle klanten\n7. Bestelling per medewerker");
         }
     }
 }

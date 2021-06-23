@@ -8,12 +8,26 @@ namespace vanderBinckesBP
 {
     class Accessoire
     {
-        int accessoirenummer;
-        string naam;
-        decimal huurprijs;
+        public int accessoirenummer;
+        public string naam;
+        public decimal huurprijs;
+
+        public Accessoire(int accessoirenummer)
+        {
+            this.accessoirenummer = accessoirenummer;
+            this.naam = "";
+            this.huurprijs = 0;
+        }
+
+        public Accessoire(int accessoirenummer, string naam, decimal huurprijs)
+        {
+            this.accessoirenummer = accessoirenummer;
+            this.naam = naam;
+            this.huurprijs = huurprijs;
+        }
 
         public Accessoire GetAccessoire(int accessoirenummer) {
-            Accessoire a = new Accessoire();
+            Accessoire a = new Accessoire(accessoirenummer);
             //Todo: implement code to get accessoire information.
             return a;
         }

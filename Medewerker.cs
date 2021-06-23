@@ -12,6 +12,14 @@ namespace vanderBinckesBP
         public string achternaam { get; }
         public DateTime datumInDienst;
 
+        public Medewerker(int medewerkernummer)
+        {
+            this.voornaam = String.Empty;
+            this.achternaam = String.Empty;
+            this.medewerkernummer = medewerkernummer;
+            this.datumInDienst = DateTime.Today;
+        }
+
         public Medewerker(string voornaam, string achternaam)
         {
             this.voornaam = voornaam;
@@ -19,11 +27,11 @@ namespace vanderBinckesBP
             this.medewerkernummer = 999;
             this.datumInDienst = DateTime.Today;
         }
-        public Medewerker(int medewerkernummer, string voornaam, string achternaam)
+
+        public Medewerker(string voornaam, string achternaam, DateTime datumInDienst)
         {
             this.voornaam = voornaam;
             this.achternaam = achternaam;
-            this.medewerkernummer = medewerkernummer;
             this.datumInDienst = DateTime.MinValue;
         }
 
