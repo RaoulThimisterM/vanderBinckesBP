@@ -47,7 +47,6 @@ namespace vanderBinckesBP
                 }
             }
             Close();
-            medewerker.ForEach(item => Console.WriteLine(item.voornaam + " " + item.achternaam + " Werknemersnummer: " + item.medewerkernummer));
             return medewerker;
         }
 
@@ -113,7 +112,7 @@ namespace vanderBinckesBP
                 cmd.Parameters.AddWithValue("@medewerkernummer", a.medewerkernummer);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
-                Console.WriteLine("Medewerker aangepast: " + a.voornaam + " " + a.achternaam + ". In dienst sinds: " + a.datumInDienst + ". Druk op Enter om door te gaan.");
+                Console.WriteLine("Medewerker aangepast: " + a.voornaam + " " + a.achternaam + ". Druk op Enter om door te gaan.");
                 Console.ReadLine();
             }
             Close();

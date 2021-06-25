@@ -10,6 +10,39 @@ namespace vanderBinckesBP
         public static Database dbObject = new Database();
         static void Main(string[] args)
         {
+            bool login = true;
+            List<Medewerker> medewerkers = dbObject.ListMedewerkers();
+            while (login)
+            {
+                Console.WriteLine("Login naar Verhuursysteem.");
+                Console.WriteLine("Vul je werknemersnummer in:");
+                int loginNummer = Convert.ToInt32(Console.ReadLine());
+                for (int i = 0; i < medewerkers.Count; i++)
+                {
+                    if (medewerkers[i].medewerkernummer == loginNummer)
+                    {
+                        Console.WriteLine("Nummer gevonden.");
+                        break;
+                    }
+                    else if (medewerkers[i].medewerkernummer != loginNummer && i == medewerkers.Count -1)
+                    {
+                        Console.WriteLine("Nummer niet gevonden, probeer het nogmaals.");
+                    }
+                }
+                Console.WriteLine("Vul je wachtwoord in:");
+                string datumInDienst = Console.ReadLine();
+                if (medewerkers[loginNummer - 1].datumInDienst == Convert.ToDateTime(datumInDienst))
+                {
+                    Console.WriteLine("Wachtwoord klopt, je wordt ingelogd.");
+                    login = false;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Inlogpoging mislukt. Log opnieuw in.");
+                }
+            }
+            
             Console.WriteLine("Welkom bij het Bakfiets Verhuur Programma van VanderBinckes.");
             while (true)
             {
@@ -33,7 +66,7 @@ namespace vanderBinckesBP
                             MaakMedewerker();
                             break;
                         case 3:
-                            dbObject.ListMedewerkers();
+                            ListAlleMedewerkers();
                             break;
                         case 4:
                             BewerkMedewerker();
@@ -52,6 +85,12 @@ namespace vanderBinckesBP
                     }
                 }
             }
+        }
+
+        private static void ListAlleMedewerkers()
+        {
+            List<Medewerker> medewerkers = dbObject.ListMedewerkers();
+            medewerkers.ForEach(item => Console.WriteLine(item.voornaam + " " + item.achternaam + " Werknemersnummer: " + item.medewerkernummer));
         }
 
         private static void BestellingPerMedewerker()
@@ -171,7 +210,10 @@ namespace vanderBinckesBP
         private static void RunMainMenu()
         {
             Console.WriteLine("\nKies uit het onderstaande menu de gewenste optie.");
-            Console.WriteLine("0. Stop programma\n1. Maak nieuwe verhuur\n2. Maak nieuwe medewerker aan\n3. Lijst van alle medewerkers\n4. Bewerk medewerker\n5. Verwijder medewerker\n6. Lijst van alle klanten\n7. Bestelling per medewerker");
+            Console.WriteLine("0. Stop programma\n1. Maak nieuwe verhuur" +
+                "\n2. Maak nieuwe medewerker aan\n3. Lijst van alle medewerkers" +
+                "\n4. Bewerk medewerker\n5. Verwijder medewerker" +
+                "\n6. Lijst van alle klanten\n7. Bestelling per medewerker");
         }
     }
 }
