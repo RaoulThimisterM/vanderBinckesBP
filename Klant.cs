@@ -16,11 +16,26 @@ namespace vanderBinckesBP
         public string huisnummerToev;
         public string opmerkingen;
 
+        public Klant(int klantnummer)
+        {
+            this.klantnummer = klantnummer;
+        }
+
         public Klant(int klantnummer, string voornaam, string achternaam)
         {
             this.klantnummer = klantnummer;
             this.voornaam = voornaam;
             this.achternaam = achternaam;
+        }
+
+        public Klant(string voornaam, string achternaam, string postcode, int huisnummer, string huisnummerToev, string opmerkingen)
+        {
+            this.voornaam = voornaam;
+            this.achternaam = achternaam;
+            this.postcode = postcode;
+            this.huisnummer = huisnummer;
+            this.huisnummerToev = huisnummerToev;
+            this.opmerkingen = opmerkingen;
         }
 
         public Klant(int klantnummer, string voornaam, string achternaam, string postcode, int huisnummer, string huisnummerToev, string opmerkingen)
